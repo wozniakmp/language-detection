@@ -1,6 +1,6 @@
-if __name__ == 'main':
-    import tensorflow as tf
-    import matplotlib as plt
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
 
 def build_model(input_dimension=2, output_dimension=5, perceptrons=[10], act='sigmoid', hidden_layers=1, LR=0.2):
     # define model
