@@ -1,13 +1,12 @@
-#import matplotlib.pyplot as plt
-import numpy as np
+# import matplotlib.pyplot as plt
+# import numpy as np
 import pandas as pd
-#import tensorflow as tf
+# import tensorflow as tf
 import functions as fn
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import OneHotEncoder
+# from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-
 
 # https://www.kaggle.com/datasets/basilb2s/language-detection?resource=download
 # dataset = pd.read_csv("/kaggle/input/language-detection/Language Detection.csv")
@@ -21,35 +20,21 @@ print(dataset.isna().sum())
 
 dataset = dataset[dataset['Language'] != 'Hindi']
 
-text = dataset['Text']
-lang = dataset['Language']
-
-# transform data
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(text).toarray()
-print(X.shape)
-
-# transform labels
-lang = np.array(lang).reshape(-1, 1)
-lang_enc = OneHotEncoder().fit(lang)
-Y = lang_enc.transform(lang).toarray()
+X, Y, lang_enc = fn.split_xy(dataset)
 
 # data split
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.4, stratify=Y)
-
 
 # ## Model 1 - Sigmoid activation
 
 print("Sigmoid")
 
 model1 = fn.build_model(input_dimension=X.shape[1], output_dimension=16, perceptrons=[32],
-                     act='sigmoid', hidden_layers=1, LR=0.002)
-
+                        act='sigmoid', LR=0.002)
 
 # ### Training
 
 loss_accuracy = fn.fit_model(model1, X_train, Y_train, epochs=5, validation_split=0.2)[0]
-
 
 # ### Evaluation
 
@@ -72,12 +57,11 @@ print('Test accuracy:', accuracy)
 # ## Model 2 - ReLU activation
 
 model2 = fn.build_model(input_dimension=X.shape[1], output_dimension=16,
-                     perceptrons=[64, 16], act='ReLU', hidden_layers=2, LR=0.0005)
+                        perceptrons=[64, 16], act='ReLU', LR=0.0005)
 
 # ### Training
 
 loss_accuracy = fn.fit_model(model2, X_train, Y_train, epochs=6, validation_split=0.2)[0]
-
 
 # ### Evaluation
 
